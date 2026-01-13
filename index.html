@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>AWASHAFT – Grouting & Design Tool (2026_01)</title>
+  <style>
+    :root{ --bg:#0d0d0f; --ink:#ffffff; --muted:#bdbdc2; --card:#17181b; --card-top:#121317; --border:#2a2c31; --accent:#e1007a; --ok:#2ea44f; --warn:#d97706; --err:#b91c1c; }
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:Inter,Segoe UI,system-ui,-apple-system,Helvetica,Arial,sans-serif}
+    .container{max-width:1240px;margin:28px auto;padding:0 18px}
+    header.global{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:18px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{height:36px;width:auto;border-radius:6px;background:#111;display:inline-block}
+    .logo.rehau{height:108px}
+    h1{margin:8px 0 4px;font-size:26px}
+    .subtitle{color:var(--accent);font-size:13px;margin:4px 0}
+    .btnbar{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0;align-items:center}
+    input,select,button{background:#0f1115;color:#fff;border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:14px}
+    input::placeholder{color:#80848c}
+    button.primary{background:var(--accent);border-color:#7f0048}
+    button.secondary{background:#1b1d22}
+    button.ghost{background:transparent;border-color:#3a3d43}
+    .hint{font-size:12px;color:#ffb84d;display:none}
+    .section-title{display:flex;align-items:center;gap:8px;font-size:18px;margin:24px 0 10px;border-bottom:2px solid var(--accent);padding-bottom:6px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 10px 20px rgba(0,0,0,.25)}
+    .card header{padding:14px 16px;background:var(--card-top);border-bottom:1px solid #222}
+    .card header h2{margin:0;font-size:16px}
+    .card .body{padding:16px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+    .row-1{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:12px}
+    label{font-size:12px;color:#c9cbd2;margin-bottom:6px;display:block}
+    .unit-wrap{display:flex;align-items:center;gap:6px}
+    .unit{font-size:12px;color:#9aa0aa}
+    .output{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:8px}
+    .outbox{background:#0f1115;border:1px dashed #3a3a3a;border-radius:12px;padding:12px}
+    .outbox .label{font-size:12px;color:#a9abb1}
+    .outbox .value{font-size:20px;font-weight:650;margin-top:4px}
+    .statusbar{display:flex;align-items:center;gap:10px;margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:10px;background:#111318}
+    .dot{width:10px;height:10px;border-radius:50%}
+    .ok{background:var(--ok)} .warn{background:var(--warn)} .err{background:var(--err)}
+    .sis-centered img{height:216px;width:auto;display:block;margin:0 auto}
+    .list{background:#0f1115;border:1px solid var(--border);border-radius:12px;padding:12px;margin-top:10px}
+    .list h3{margin:0 0 8px;font-size:14px;color:#d7d8dc}
+    .list ul{margin:0;padding-left:18px}
+    .list li{margin:4px 0;color:#cfd2d8}
+    .thumbs{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px}
+    .thumb{min-width:140px;height:108px;border:1px dashed #3a3a3a;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#9aa0aa;font-size:12px;background:#17181d}
+    .thumbimg{height:108px;width:auto;border:1px dashed #3a3a3a;border-radius:8px;background:#17181d;padding:4px}
+
+    @media print { body{background:#fff;color:#000} .container{max-width:100%;margin:0;padding:0} header.global .subtitle{color:#000} .btnbar, #liveMode{display:none !important} .card{box-shadow:none;border:1px solid #ccc} .grid{grid-template-columns:1fr 1fr;gap:10px} .statusbar{border-color:#ccc;background:#f7f7f7;color:#000} .outbox{background:#fff;border-color:#ccc} }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header class="global">
+    <div class="brand">
+      <img src="images/rehau.png" alt="REHAU" class="logo rehau" onerror="this.outerHTML='\x3cdiv class=subtitle\x3eREHAU logo (png)\x3c/div\x3e'"/>
+    </div>
+    <div class="subtitle">Generated: <span id="generated"></span></div>
+    <div class="subtitle"><label style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="liveMode" checked> Live updates</label></div>
+  </header>
+
+  
+<div id="infoBanner" style="margin:8px 0;padding:10px;border:1px solid #3a3d43;border-radius:10px;background:#111318;color:#dcdde3;font-size:13px"><strong>Note:</strong> This live site runs on GitHub Pages. Enter a Project ID and click <em>Calculate</em> to load component thumbnails.</div>
+<h1>AWASHAFT – Grouting & Design Tool</h1>
+  <p class="subtitle">RetroFit (shaft-in-shaft). Version 2026_01</p>
+
+  <div class="section-title">Setup</div>
+  <div class="btnbar">
+    <select id="setup"><option value="800">AWASHAFT 800</option><option value="1000">AWASHAFT 1000</option></select>
+    <input id="projectId" placeholder="Project ID – required"/>
+    <button class="primary" id="btnCalc" disabled>Calculate</button>
+    <button class="secondary" id="btnReset">Reset</button>
+    <button class="ghost" id="btnPrint">Download PDF</button>
+    <span id="pidHint" class="hint">Enter a Project ID to enable Calculate.</span>
+  </div>
+
+  <div class="section-title">Grouting Calculator</div>
+  <div class="grid">
+    <div class="card">
+      <header><h2>Inputs</h2></header>
+      <div class="body">
+        <div class="row">
+          <div>
+            <label>MH Concrete ID <span class="unit">(mm)</span></label>
+            <div class="unit-wrap">
+              <input type="number" id="mhId" step="1" placeholder="e.g. 1200"/>
+              <span class="unit">mm</span>
+            </div>
+            <div class="subtitle" id="mhRange">–</div>
+            <div class="subtitle">Enter the inner diameter of the existing concrete maintenance hole.</div>
+          </div>
+          <div>
+            <label>MH Concrete internal height <span class="unit">(mm)</span></label>
+            <div class="unit-wrap">
+              <input type="number" id="mhHeight" placeholder="e.g. 1200" min="300" step="1"/>
+              <span class="unit">mm</span>
+            </div>
+            <div class="subtitle">Measure from the top of benching to the top of the last concrete riser section.</div>
+          </div>
+        </div>
+
+        <h3 class="subtitle" style="margin:10px 0">Mortar specification (locked)</h3>
+        <div class="row">
+          <div>
+            <label>Bag weight</label>
+            <div class="unit-wrap">
+              <input type="number" id="bagKg" value="20" readonly/>
+              <span class="unit">kg</span>
+            </div>
+          </div>
+          <div>
+            <label>Yield per bag</label>
+            <div class="unit-wrap">
+              <input type="number" id="yieldL" value="11.2" readonly/>
+              <span class="unit">L</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Price per bag <span class="unit">($AUD)</span></label>
+            <input type="number" id="priceBag" placeholder="e.g. 28.50" step="0.01"/>
+            <div class="subtitle">Please enter the amount for the price per bag.</div>
+          </div>
+          <div>
+            <label>Bags per pallet (locked)</label>
+            <div class="unit-wrap">
+              <input type="number" id="bagsPerPallet" value="64" readonly/>
+              <span class="unit">bags</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Price per pallet (auto)</label>
+            <input type="number" id="pricePallet" disabled>
+          </div>
+        </div>
+
+        <div style="width:100%;text-align:center;margin-top:14px" class="sis-centered" aria-label="AWASHAFT Shaft-in-Shaft">
+          <img src="images/awashaft_sis.png" alt="AWASHAFT Shaft-in-Shaft" onerror="this.outerHTML='\x3cdiv class=subtitle\x3eAWASHAFT S-i-S logo (png)\x3c/div\x3e'"/>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <header><h2>Outputs</h2></header>
+      <div class="body">
+        <div class="output">
+          <div class="outbox"><div class="label">Annular volume</div><div class="value"><span id="annulusM3">–</span> m³</div></div>
+          <div class="outbox"><div class="label">Total mortar</div><div class="value"><span id="totalL">–</span> L</div></div>
+          <div class="outbox"><div class="label">Bags (exact)</div><div class="value"><span id="bagsExact">–</span></div></div>
+          <div class="outbox"><div class="label">Bags (order)</div><div class="value"><span id="bagsOrder">–</span></div></div>
+          <div class="outbox"><div class="label">Pallets (exact)</div><div class="value"><span id="palletsExact">–</span></div></div>
+          <div class="outbox"><div class="label">Total (ex GST)</div><div class="value">$<span id="priceEx">–</span></div></div>
+          <div class="outbox"><div class="label">GST (10%)</div><div class="value">$<span id="gst">–</span></div></div>
+          <div class="outbox"><div class="label">Total (incl GST)</div><div class="value">$<span id="priceInc">–</span></div></div>
+        </div>
+        <div class="statusbar" id="groutStatus"><span class="dot warn"></span><span class="subtitle">Waiting for valid inputs…</span></div>
+        <div class="list">
+          <h3>Components required (Grouting)</h3>
+          <ul id="componentsListGrout"></ul>
+          <div class="thumbs" id="componentsThumbsGrout"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Design Tool</div>
+  <div class="grid">
+    <div class="card">
+      <header><h2>Inputs</h2></header>
+      <div class="body">
+        <div class="row">
+          <div>
+            <label>AWASHAFT RetroFit Adaptor</label>
+            <div class="unit-wrap"><input type="number" id="adaptor" value="140" readonly/><span class="unit">mm</span></div>
+            <div class="subtitle">Adaptor height fixed at 140 mm.</div>
+          </div>
+          <div>
+            <label>Access cover</label>
+            <select id="cover"><option value="0">None (0 mm)</option><option value="180">LBR 110 + CI Frame + Cover 70 (180 mm)</option><option value="150">Encased in Concrete Cover 150 (150 mm)</option></select>
+            <div class="subtitle">Select the access cover type and height.</div>
+          </div>
+        </div>
+        <div class="row-1">
+          <div>
+            <label>AWASHAFT installation height (from benching to FSL)</label>
+            <div class="unit-wrap"><input type="number" id="fsl" placeholder="e.g. 1400"/><span class="unit">mm</span></div>
+            <div class="subtitle">Enter the complete installation height – benching to FSL.</div>
+          </div>
+        </div>
+        <div class="row-1">
+          <div>
+            <label>Gap (guideline; auto within 20–40 mm)</label>
+            <div class="unit-wrap"><input type="number" id="gap" value="30" readonly/><span class="unit">mm</span></div>
+            <div class="subtitle">Gap auto-selected between 20–40 mm to meet FSL.</div>
+          </div>
+        </div>
+        <div class="list" id="validation" style="margin-top:10px">
+          <h3>Validation Report</h3>
+          <ul id="valList"></ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <header><h2>Outputs & Components</h2></header>
+      <div class="body">
+        <div class="output" style="margin-top:10px">
+          <div class="outbox"><div class="label">AWASHAFT Risers needed</div><div class="value"><span id="riserText">–</span></div></div>
+          <div class="outbox"><div class="label">Cone neck trimming</div><div class="value"><span id="neckTrim">–</span> mm</div></div>
+          <div class="outbox"><div class="label">Effective cone height</div><div class="value"><span id="effCone">–</span> mm</div></div>
+          <div class="outbox"><div class="label">Total installation height</div><div class="value"><span id="installTotal">–</span> mm</div></div>
+          <div class="outbox"><div class="label">Difference to FSL</div><div class="value"><span id="diffFsl">–</span> mm</div></div>
+          <div class="outbox"><div class="label">Status</div><div class="value" id="statusText">–</div></div>
+        </div>
+        <div class="statusbar" id="designStatus"><span class="dot warn"></span><span class="subtitle">Waiting for valid inputs…</span></div>
+        <div class="list">
+          <h3>Components required (Design)</h3>
+          <ul id="componentsList"></ul>
+          <div class="thumbs" id="componentsThumbs"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const el=(id)=>document.getElementById(id);
+  function fmt(n,dec=2){ if(Number.isNaN(n)) return '–'; return parseFloat(n).toFixed(dec); }
+  function setStatusBar(barId, level, text){ const bar=el(barId); if(!bar) return; const dot=bar.querySelector('.dot'); const span=bar.querySelector('.subtitle'); if(dot) dot.className='dot '+level; if(span) span.textContent=text; }
+  function addVal(msg, ok){ const li=document.createElement('li'); li.textContent=msg; li.style.border='1px solid'; li.style.borderColor = ok? '#2ea44f' : '#b91c1c'; li.style.borderRadius='8px'; li.style.padding='6px 8px'; li.style.margin='4px 0'; el('valList').appendChild(li); }
+  function clearVal(){ const ul=el('valList'); if(ul) ul.innerHTML=''; }
+
+  const FIXED={ bagKg:20, yieldL:11.2, bagsPerPallet:64 };
+  el('generated').textContent=new Date().toLocaleString();
+
+  const CATALOG={
+    series:{
+      '800':{ od:820, cone:615, risers:[125,250,500,750], mhIdMin:980, mhIdMax:1100 },
+      '1000':{ od:1020, cone:690, risers:[250,500,750,1000], mhIdMin:1200, mhIdMax:1500 }
+    },
+    adaptor:140, trimMax:220,
+    img:{
+      adaptor:'images/adaptor.png',
+      cone:{ '800':'images/cone_800.png', '1000':'images/cone_1000.png' },
+      cover:{ '0':null, '150':'images/cover_150.png', '180':'images/cover_180.png' },
+      riser:{
+        '800':  { '125':'images/riser_800_125.png','250':'images/riser_800_250.png','500':'images/riser_800_500.png','750':'images/riser_800_750.png' },
+        '1000': { '250':'images/riser_1000_250.png','500':'images/riser_1000_500.png','750':'images/riser_1000_750.png','1000':'images/riser_1000_1000.png' }
+      },
+      ring_type_r:'images/sealing_ring_ra.png',
+      ring_l_profile_adaptor:'images/seal_l_profile_adaptor.png',
+      ring_cone:'images/sealing_ring_cone.png',
+      bag:'images/bag.png', pallet:'images/pallet.png'
+    }
+  };
+
+  // ► Persistence switched to sessionStorage for auto-reset on close
+  const STORE_KEY='awas_v15_state';
+  function saveState(){ try{ const s={ setup:el('setup').value, projectId:el('projectId').value, mhId:el('mhId').value, mhHeight:el('mhHeight').value, priceBag:el('priceBag').value, cover:el('cover').value, fsl:el('fsl').value, liveMode: el('liveMode').checked?'1':'0' }; sessionStorage.setItem(STORE_KEY, JSON.stringify(s)); }catch(e){} }
+  function loadState(){ try{ const raw=sessionStorage.getItem(STORE_KEY); if(!raw) return; const s=JSON.parse(raw); if(s.setup) el('setup').value=s.setup; if(s.projectId!==undefined) el('projectId').value=s.projectId; if(s.mhId!==undefined) el('mhId').value=s.mhId; if(s.mhHeight!==undefined) el('mhHeight').value=s.mhHeight; if(s.priceBag!==undefined) el('priceBag').value=s.priceBag; if(s.cover) el('cover').value=s.cover; if(s.fsl!==undefined) el('fsl').value=s.fsl; if(s.liveMode!==undefined) el('liveMode').checked=(s.liveMode==='1'); }catch(e){} }
+  window.addEventListener('beforeunload', ()=>{ try{ sessionStorage.removeItem(STORE_KEY); }catch(e){} });
+
+  let selectedSeries='800';
+  function applySetup(){ selectedSeries=el('setup').value; const cfg=CATALOG.series[selectedSeries]; el('mhRange').textContent=`Allowed MH Concrete ID: ${cfg.mhIdMin}–${cfg.mhIdMax} mm`; updatePricePerPallet(); if(el('liveMode').checked) calculate(false); saveState(); }
+
+  function updatePricePerPallet(){ const ppb=parseFloat(el('priceBag').value||'0'); el('pricePallet').value=(ppb>0)?(ppb*FIXED.bagsPerPallet).toFixed(2):''; }
+
+  function autoSelectOptimised(){ const cfg=CATALOG.series[selectedSeries]; const cone=cfg.cone; const adaptor=CATALOG.adaptor; const cover=parseFloat(el('cover').value||'0'); const fsl=parseFloat(el('fsl').value||''); if(isNaN(fsl)) return {ok:false, reason:'NO_FSL', gap:null, risers:[], diff:NaN, trim:0, effCone:cone}; const risers=cfg.risers.slice().sort((a,b)=>b-a); let best=null; for(let gap=20; gap<=40; gap++){ const target=fsl - adaptor - cover - gap; if(target<=0) continue; const limit=Math.max(0, Math.min(4000, Math.floor(target))); const INF=1e9; const dist=new Array(limit+1).fill(INF); const prev=new Array(limit+1).fill(-1); const used=new Array(limit+1).fill(-1); dist[0]=0; for(let s=0;s<=limit;s++){ if(dist[s]===INF) continue; for(let i=0;i<risers.length;i++){ const r=risers[i]; const t=s+r; if(t<=limit && dist[t]>dist[s]+1){ dist[t]=dist[s]+1; prev[t]=s; used[t]=i; } } } let bestCand=null; for(let s=0;s<=limit;s++){ if(dist[s]===INF) continue; const requiredEff=target - s; const trim=cone - requiredEff; const diff=adaptor + cover + gap + s + requiredEff - fsl; if(requiredEff>=0 && trim>=0 && trim<=CATALOG.trimMax){ const cand={s, trim, requiredEff, diff, gap, modules:dist[s]}; if(!bestCand || Math.abs(cand.diff)<Math.abs(bestCand.diff) || (Math.abs(cand.diff)===Math.abs(bestCand.diff) && (cand.modules<bestCand.modules || (cand.modules===bestCand.modules && cand.s>bestCand.s)))) bestCand=cand; } } if(bestCand){ let s=bestCand.s; const pick=[]; while(s>0 && prev[s]>=0){ const idx=used[s]; pick.push(risers[idx]); s=prev[s]; } const option={gap:gap, risers:pick.sort((a,b)=>b-a), diff:bestCand.diff, trim:bestCand.trim, effCone:bestCand.requiredEff}; if(!best || Math.abs(option.diff)<Math.abs(best.diff) || (Math.abs(option.diff)===Math.abs(best.diff) && option.risers.length<best.risers.length) || (Math.abs(option.diff)===Math.abs(best.diff) && option.risers.length===best.risers.length && option.risers.reduce((a,b)=>a+b,0)>best.risers.reduce((a,b)=>a+b,0))) best=option; } }
+    if(!best){ return {ok:false, reason:'NO_FEASIBLE', gap:null, risers:[], diff:NaN, trim:NaN, effCone:cone}; }
+    return {ok:true, ...best}; }
+
+  function addThumb(container,label,src){ if(src){ const img=document.createElement('img'); img.className='thumbimg'; img.alt=label; img.src=src; img.onerror=function(){ this.outerHTML=`<div class=\"thumb\">${label}</div>`; }; container.appendChild(img);} else { const d=document.createElement('div'); d.className='thumb'; d.textContent=label; container.appendChild(d);} }
+
+  function updateComponentsGrout(bagsOrder,palletsExact){ const list=el('componentsListGrout'); const thumbs=el('componentsThumbsGrout'); if(list) list.innerHTML=''; if(thumbs) thumbs.innerHTML=''; if(list){ if(!Number.isNaN(bagsOrder)){ const li=document.createElement('li'); li.textContent=`Bags ordered: ${bagsOrder}`; list.appendChild(li);} if(!Number.isNaN(palletsExact)){ const li=document.createElement('li'); li.textContent=`Pallets exact: ${palletsExact.toFixed(3)}`; list.appendChild(li);} } if(thumbs){ addThumb(thumbs,'Bags', CATALOG.img.bag); addThumb(thumbs,'Pallet', CATALOG.img.pallet);} }
+
+  function updateComponentsDesign(selectedSeries, baseCone, risers, cover){
+    const list=el('componentsList'); const thumbs=el('componentsThumbs');
+    if(list) list.innerHTML=''; if(thumbs) thumbs.innerHTML='';
+
+    const typeR_adaptor = 1;
+    const lprofile_adaptor = 1;
+    const typeR_risers = (risers||[]).length;
+    const cone_ring = 1;
+
+    const items=[];
+    items.push('Adaptor 140 mm');
+    if(risers && risers.length>0){ items.push('Risers: ' + risers.map(r=>`${r} mm`).join(' + ')); }
+    items.push(`Sealing Rings – Type R (Adaptor): ${typeR_adaptor} pc`);
+    items.push(`Sealing Rings – L-Profile (Adaptor): ${lprofile_adaptor} pc`);
+    items.push(`Sealing Rings – Type R (Risers): ${typeR_risers} pc`);
+    items.push('Cone ' + baseCone + ' mm (' + selectedSeries + ' series)');
+    items.push(`Sealing Rings – Cone: ${cone_ring} pc`);
+    if(cover>0){ items.push(`Access cover ${cover} mm`); }
+    items.push(`Gap selected: ${el('gap').value} mm (guideline 20–40 mm)`);
+
+    items.forEach(t=>{ const li=document.createElement('li'); li.textContent=t; list.appendChild(li); });
+
+    addThumb(thumbs,'Adaptor 140 mm', CATALOG.img.adaptor);
+    addThumb(thumbs,`Cone ${baseCone} mm`, CATALOG.img.cone[selectedSeries]);
+    if(cover>0){ const coverImg=CATALOG.img.cover[String(cover)]; addThumb(thumbs,`Cover ${cover} mm`, coverImg); }
+    (risers||[]).forEach(r=>{ const rimgMap = CATALOG.img.riser[selectedSeries] || {}; addThumb(thumbs, `Riser ${r} mm`, rimgMap[String(r)] || null); });
+    addThumb(thumbs,'Type R Ring (visual)', CATALOG.img.ring_type_r);
+    addThumb(thumbs,'L-Profile Seal (Adaptor visual)', CATALOG.img.ring_l_profile_adaptor);
+    addThumb(thumbs,'Cone Sealing Ring (visual)', CATALOG.img.ring_cone);
+  }
+
+  function updateValidation({mhOk,idGtOd,heightOk,trimOk,gapOk,alignOk}){
+    clearVal();
+    addVal('MH ID within allowed range', !!mhOk);
+    addVal('MH ID greater than AWASHAFT OD', !!idGtOd);
+    addVal('MH internal height provided (>0 mm)', !!heightOk);
+    addVal('Cone neck trimming ≤ 220 mm', !!trimOk);
+    addVal('Gap within 20–40 mm guideline', !!gapOk);
+    addVal('Difference to FSL ≈ 0 mm', !!alignOk);
+  }
+
+  function refreshPid(){ const hasPid=(el('projectId').value||'').trim()!==''; el('btnCalc').disabled=!hasPid; el('pidHint').style.display= hasPid? 'none':'inline'; }
+
+  function calculate(strict){
+    const pid=(el('projectId').value||'').trim(); if(pid===''){ refreshPid(); return; }
+    const cfg=CATALOG.series[selectedSeries];
+    const mhId=parseFloat(el('mhId').value||'');
+    const mhOk=!isNaN(mhId) && mhId>=cfg.mhIdMin && mhId<=cfg.mhIdMax;
+    if(!mhOk){ el('mhRange').textContent=`⚠ ${fmt(mhId,0)} mm outside ${cfg.mhIdMin}–${cfg.mhIdMax} mm`; setStatusBar('groutStatus','warn','MH ID outside allowed range'); }
+    else { el('mhRange').textContent=`Allowed MH Concrete ID: ${cfg.mhIdMin}–${cfg.mhIdMax} mm`; }
+
+    const id=mhId; const od=cfg.od; const h=parseFloat(el('mhHeight').value||'');
+    const priceBag=parseFloat(el('priceBag').value||'0');
+    updatePricePerPallet();
+    const idGtOd=!isNaN(id) && id>od; const heightOk=!isNaN(h) && h>0;
+
+    let bagsOrderNaN=NaN, palletsExactNaN=NaN;
+    if(idGtOd && heightOk){
+      const annulus_mm3=Math.PI/4*(id*id-od*od)*h;
+      const annulus_m3=annulus_mm3/1e9;
+      const totalL=annulus_m3*1000;
+      const bagsExact=totalL/FIXED.yieldL;
+      const bagsOrder=Math.ceil(bagsExact);
+      const palletsExact=bagsOrder/FIXED.bagsPerPallet;
+      const priceEx=bagsOrder*priceBag;
+      const gst=priceEx*0.10;
+      const priceInc=priceEx+gst;
+      el('annulusM3').textContent=annulus_m3.toFixed(3);
+      el('totalL').textContent=totalL.toFixed(1);
+      el('bagsExact').textContent=bagsExact.toFixed(2);
+      el('bagsOrder').textContent=bagsOrder;
+      el('palletsExact').textContent=palletsExact.toFixed(3);
+      el('priceEx').textContent=priceEx.toFixed(2);
+      el('gst').textContent=gst.toFixed(2);
+      el('priceInc').textContent=priceInc.toFixed(2);
+      setStatusBar('groutStatus','ok','Inputs valid – totals up to date');
+      bagsOrderNaN=bagsOrder; palletsExactNaN=palletsExact;
+    } else {
+      ['annulusM3','totalL','bagsExact','bagsOrder','palletsExact','priceEx','gst','priceInc'].forEach(id=>el(id).textContent='–');
+      const msg = (!heightOk)? 'Waiting for valid MH height…' : (!idGtOd? `MH ID must be greater than AWASHAFT OD (${od} mm)` : 'Waiting for valid MH dimensions…');
+      setStatusBar('groutStatus','warn', msg);
+    }
+    updateComponentsGrout(bagsOrderNaN, palletsExactNaN);
+
+    const best=autoSelectOptimised();
+    const baseCone=cfg.cone; const adaptor=CATALOG.adaptor; const cover=parseFloat(el('cover').value||'0');
+    let neckTrim=0, effCone=baseCone, installTotal=0, diff=NaN, status='–', gapOk=false, trimOk=false, alignOk=false;
+    if(best.ok){
+      const risers=best.risers; const riserTotal=risers.reduce((a,b)=>a+b,0);
+      el('gap').value=best.gap;
+      neckTrim=best.trim; effCone=best.effCone; diff=best.diff;
+      installTotal=adaptor+cover+best.gap+riserTotal+effCone;
+      gapOk=(best.gap>=20 && best.gap<=40);
+      trimOk=(neckTrim<=CATALOG.trimMax);
+      alignOk=(Math.abs(diff)<1);
+      status=(alignOk && trimOk)? 'Aligned ✓' : (trimOk? (diff>0? `Over FSL by ${fmt(diff,1)} mm` : `Under FSL by ${fmt(-diff,1)} mm`) : `Trim exceeds 220 mm by ${fmt(neckTrim-CATALOG.trimMax,1)} mm`);
+      if(alignOk && trimOk) setStatusBar('designStatus','ok','Design aligned to FSL (≈0 mm)');
+      else if(trimOk) setStatusBar('designStatus','warn','Alignment offset – review FSL/cover');
+      else setStatusBar('designStatus','err','Trim exceeds 220 mm – adjust inputs');
+      el('riserText').textContent = risers.length? risers.map(r=>r+" mm").join(' + ') + ` (Total: ${risers.length} items)` : 'No risers calculated';
+      updateComponentsDesign(selectedSeries, baseCone, risers, cover);
+    } else {
+      el('riserText').textContent='No risers calculated';
+      if(best.reason==='NO_FEASIBLE') setStatusBar('designStatus','warn','No feasible design within gap 20–40 mm and trim ≤ 220 mm. Adjust FSL or cover.');
+      else setStatusBar('designStatus','warn','Waiting for installation height…');
+      updateComponentsDesign(selectedSeries, baseCone, [], cover);
+    }
+
+    el('neckTrim').textContent=isNaN(neckTrim)?'–':neckTrim.toFixed(1);
+    el('effCone').textContent=isNaN(effCone)?'–':effCone.toFixed(1);
+    el('installTotal').textContent=isNaN(installTotal)?'–':installTotal.toFixed(1);
+    el('diffFsl').textContent=isNaN(diff)?'–':diff.toFixed(1);
+    el('statusText').textContent=status;
+    updateValidation({ mhOk, idGtOd, heightOk, trimOk, gapOk, alignOk });
+    saveState();
+  }
+
+  function onInput(){ updatePricePerPallet(); if(el('liveMode').checked) calculate(false); saveState(); }
+
+  // Init
+  loadState();
+  document.addEventListener('input', (e)=>{ if(e.target && e.target.id==='projectId'){ const hasPid=(el('projectId').value||'').trim()!==''; el('btnCalc').disabled=!hasPid; el('pidHint').style.display= hasPid? 'none':'inline'; saveState(); }});
+  const hasPid=(el('projectId').value||'').trim()!==''; el('btnCalc').disabled=!hasPid; el('pidHint').style.display= hasPid? 'none':'inline';
+  applySetup();
+  el('setup').addEventListener('change', ()=>{ applySetup(); });
+  ['mhId','mhHeight','priceBag','cover','fsl'].forEach(id=> el(id).addEventListener('input', onInput));
+  el('liveMode').addEventListener('change', saveState);
+  el('btnCalc').addEventListener('click', ()=>{ calculate(true); });
+  el('btnReset').addEventListener('click', ()=>{ try{ sessionStorage.removeItem(STORE_KEY); }catch(e){} window.location.reload(); });
+  el('btnPrint').addEventListener('click', ()=>{ window.print(); });
+})();
+</script>
+</body>
+</html>
